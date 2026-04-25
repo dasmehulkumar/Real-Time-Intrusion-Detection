@@ -86,5 +86,5 @@ This project is open-source and free to use for learning and personal projects.
 
 ---
 
-## ⭐ Support
-If you found this project helpful, consider giving it a star!
+<p align="center">⭐ If you found this project helpful, consider giving it a star!
+</p>
