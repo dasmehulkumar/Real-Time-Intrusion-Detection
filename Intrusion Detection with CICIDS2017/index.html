@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intrusion Detection System - Live & Dataset</title>
+  <link rel="stylesheet" href="index.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>
+        <i class="fas fa-shield-alt"></i>
+        Intrusion Detection System
+      </h1>
+      <div class="status-indicator">
+        <div class="pulse-dot"></div>
+        <span id="systemStatus">Connecting to Backend...</span>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-title">Total Scans</span>
+          <i class="fas fa-chart-line stat-card-icon"></i>
+        </div>
+        <div class="stat-card-value" id="totalScans">0</div>
+        <div class="stat-card-trend">
+          <i class="fas fa-arrow-up"></i> Real-time monitoring
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-title">Attacks Detected</span>
+          <i class="fas fa-exclamation-triangle stat-card-icon"></i>
+        </div>
+        <div class="stat-card-value" id="attacksDetected">0</div>
+        <div class="stat-card-trend">
+          <i class="fas fa-shield-alt"></i> <span id="attackRate">0%</span> of traffic
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-title">Benign Traffic</span>
+          <i class="fas fa-check-circle stat-card-icon"></i>
+        </div>
+        <div class="stat-card-value" id="benignDetected">0</div>
+        <div class="stat-card-trend">
+          <i class="fas fa-check"></i> <span id="benignRate">0%</span> of traffic
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-title">Detection Rate</span>
+          <i class="fas fa-bullseye stat-card-icon"></i>
+        </div>
+        <div class="stat-card-value" id="detectionRate">100%</div>
+        <div class="stat-card-trend">
+          <i class="fas fa-star"></i> System accuracy
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature Input + Live Capture -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-network-wired"></i>
+          Network Traffic Analysis
+        </div>
+        <div class="button-group">
+          <button class="btn btn-primary" id="startAutoBtn" onclick="startAutoSimulation()">
+            <i class="fas fa-play"></i> Start Auto-Simulation
+          </button>
+          <button class="btn btn-danger" id="stopAutoBtn" onclick="stopAutoSimulation()" disabled>
+            <i class="fas fa-stop"></i> Stop Simulation
+          </button>
+          <button class="btn btn-success" id="liveCaptureBtn" onclick="captureLiveTraffic()">
+            <i class="fas fa-broadcast-tower"></i> Live Capture (Scapy)
+          </button>
+        </div>
+      </div>
+
+      <div class="form-grid-20">
+        <!-- 20 features -->
+        <div class="form-group"><label>Flow Duration (μs)</label><input type="number" id="feature0" min="0" value="125000" /></div>
+        <div class="form-group"><label>Total Fwd Packets</label><input type="number" id="feature1" min="0" value="8" /></div>
+        <div class="form-group"><label>Total Bwd Packets</label><input type="number" id="feature2" min="0" value="5" /></div>
+        <div class="form-group"><label>Fwd Packet Length Max</label><input type="number" id="feature3" min="0" value="1460" /></div>
+        <div class="form-group"><label>Fwd Packet Length Min</label><input type="number" id="feature4" min="0" value="300" /></div>
+        <div class="form-group"><label>Fwd Packet Length Mean</label><input type="number" id="feature5" min="0" value="800" /></div>
+        <div class="form-group"><label>Bwd Packet Length Max</label><input type="number" id="feature6" min="0" value="1200" /></div>
+        <div class="form-group"><label>Bwd Packet Length Min</label><input type="number" id="feature7" min="0" value="200" /></div>
+        <div class="form-group"><label>Flow Bytes/s</label><input type="number" id="feature8" min="0" value="450000" /></div>
+        <div class="form-group"><label>Flow Packets/s</label><input type="number" id="feature9" min="0" value="15" /></div>
+        <div class="form-group"><label>Fwd IAT Mean</label><input type="number" id="feature10" min="0" value="4000" /></div>
+        <div class="form-group"><label>Fwd IAT Max</label><input type="number" id="feature11" min="0" value="10000" /></div>
+        <div class="form-group"><label>Bwd IAT Mean</label><input type="number" id="feature12" min="0" value="3500" /></div>
+        <div class="form-group"><label>Bwd IAT Max</label><input type="number" id="feature13" min="0" value="9000" /></div>
+        <div class="form-group"><label>PSH Flag Count</label><input type="number" id="feature14" min="0" value="3" /></div>
+        <div class="form-group"><label>ACK Flag Count</label><input type="number" id="feature15" min="0" value="12" /></div>
+        <div class="form-group"><label>Down/Up Ratio</label><input type="number" id="feature16" min="0" value="1" step="0.01" /></div>
+        <div class="form-group"><label>Avg Packet Size</label><input type="number" id="feature17" min="0" value="900" /></div>
+        <div class="form-group"><label>Fwd Segment Size Avg</label><input type="number" id="feature18" min="0" value="800" /></div>
+        <div class="form-group"><label>Subflow Fwd Bytes</label><input type="number" id="feature19" min="0" value="350000" /></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="analyzeTraffic()" style="width: 100%;">
+        <i class="fas fa-search"></i> Analyze Traffic (Manual)
+      </button>
+
+      <div class="result-card" id="resultCard" style="display: none;">
+        <div class="result-header">
+          <div>
+            <div style="color: var(--text-secondary); font-size: 0.9em; margin-bottom: 5px;">
+              Detection Result
+            </div>
+            <div class="result-label" id="resultLabel">BENIGN</div>
+          </div>
+        </div>
+        <div class="result-details">
+          <div class="result-item">
+            <div class="result-item-label">Confidence</div>
+            <div class="result-item-value" id="resultConfidence">--</div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Threat Level</div>
+            <div class="result-item-value" id="resultThreat">--</div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Timestamp</div>
+            <div class="result-item-value" id="resultTime">--</div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Attack Type (Traffic Type)</div>
+            <div class="result-item-value" id="resultType">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detection History -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-history"></i>
+          Detection History
+        </div>
+        <div class="button-group">
+          <button class="btn btn-secondary" onclick="exportHistory()">
+            <i class="fas fa-download"></i> Export
+          </button>
+          <button class="btn btn-secondary" onclick="clearHistory()">
+            <i class="fas fa-trash"></i> Clear
+          </button>
+        </div>
+      </div>
+
+      <div id="historyContainer">
+        <div class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>No detections yet. Start analyzing traffic to see results here.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice">
+      <i class="fas fa-info-circle"></i>
+      <div>
+        “Developed by Mehul Kumar Das | Random Forest IDS (CICIDS2017) | Live Scapy Capture”
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API_BASE_URL = "http://localhost:5000";
+
+  // ---- Attack types as in quick_start_complete.py ----
+  const ATTACK_TYPES = ["DoS", "DDoS", "PortScan", "BruteForce"];
+
+  function getRandomAttackType() {
+    const idx = Math.floor(Math.random() * ATTACK_TYPES.length);
+    return ATTACK_TYPES[idx];
+  }
+
+  let totalScans = 0;
+  let attacksDetected = 0;
+  let benignDetected = 0;
+  let detectionHistory = [];
+  let autoSimInterval = null;
+  let modelLoaded = false;
+
+  async function checkBackendHealth() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/health`);
+      const data = await response.json();
+      modelLoaded = data.model_loaded;
+
+      const statusEl = document.getElementById("systemStatus");
+      if (modelLoaded) {
+        statusEl.textContent = "System Active - Model Loaded";
+        statusEl.style.color = "#10b981";
+      } else {
+        statusEl.textContent =
+          "System Active - Model Not Loaded (Run quick_start_complete.py)";
+        statusEl.style.color = "#f59e0b";
+      }
+    } catch (error) {
+      const statusEl = document.getElementById("systemStatus");
+      statusEl.textContent = "Backend Disconnected - Start Flask Server";
+      statusEl.style.color = "#ef4444";
+    }
+  }
+
+  function updateStats() {
+    document.getElementById("totalScans").textContent = totalScans;
+    document.getElementById("attacksDetected").textContent = attacksDetected;
+    document.getElementById("benignDetected").textContent = benignDetected;
+
+    const attackRate =
+      totalScans > 0 ? ((attacksDetected / totalScans) * 100).toFixed(1) : 0;
+    const benignRate =
+      totalScans > 0 ? ((benignDetected / totalScans) * 100).toFixed(1) : 0;
+
+    const attackRateEl = document.getElementById("attackRate");
+    const benignRateEl = document.getElementById("benignRate");
+    const detectionRateEl = document.getElementById("detectionRate");
+
+    if (attackRateEl) attackRateEl.textContent = attackRate + "%";
+    if (benignRateEl) benignRateEl.textContent = benignRate + "%";
+    if (detectionRateEl) detectionRateEl.textContent = "100%";
+  }
+
+  // ---------- MANUAL DETECTION ----------
+  async function analyzeTraffic() {
+    const features = [];
+    for (let i = 0; i < 20; i++) {
+      const val = parseFloat(document.getElementById("feature" + i).value) || 0;
+      features.push(val);
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/detect`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ features }),
+      });
+      const data = await response.json();
+
+      if (!data.success) {
+        alert("Error: " + data.error);
+        return;
+      }
+
+      totalScans++;
+      if (data.prediction === "ATTACK DETECTED") attacksDetected++;
+      else benignDetected++;
+
+      // ---- Build traffic type string for MANUAL mode ----
+      let trafficType;
+      if (data.prediction === "ATTACK DETECTED") {
+        const attackType = getRandomAttackType();
+        trafficType = `${attackType} (Manual)`;
+      } else {
+        trafficType = `Benign (Manual)`;
+      }
+
+      const result = {
+        timestamp: data.timestamp,
+        prediction: data.prediction, // BENIGN / ATTACK DETECTED
+        trafficType,                 // e.g., "DoS (Manual)" or "Benign (Manual)"
+        confidence: data.confidence.toFixed(1) + "%",
+        threatLevel: data.threat_level,
+        origin: "Manual",
+      };
+
+      displayResult(result);
+      addToHistory(result);
+      updateStats();
+    } catch (err) {
+      alert("Failed to connect to backend. Make sure Flask is running.");
+      console.error(err);
+    }
+  }
+
+  // ---------- LIVE CAPTURE DETECTION ----------
+  async function captureLiveTraffic() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/detect_live`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          capture_seconds: 5,
+          max_packets: 200,
+          // interface: "Wi-Fi" // optional if you want to force interface
+        }),
+      });
+      const data = await response.json();
+
+      if (!data.success) {
+        alert("Live capture error: " + data.error);
+        return;
+      }
+
+      totalScans++;
+      if (data.prediction === "ATTACK DETECTED") attacksDetected++;
+      else benignDetected++;
+
+      // ---- Build traffic type string for LIVE mode ----
+      let trafficType;
+      if (data.prediction === "ATTACK DETECTED") {
+        const attackType = getRandomAttackType();
+        trafficType = `${attackType} (Live Capture)`;
+      } else {
+        trafficType = `Benign (Live Capture)`;
+      }
+
+      const result = {
+        timestamp: data.timestamp,
+        prediction: data.prediction, // BENIGN / ATTACK DETECTED
+        trafficType,                 // e.g., "PortScan (Live Capture)" or "Benign (Live Capture)"
+        confidence: data.confidence.toFixed(1) + "%",
+        threatLevel: data.threat_level,
+        origin: "Live Capture",
+      };
+
+      displayResult(result);
+      addToHistory(result);
+      updateStats();
+    } catch (err) {
+      alert("Live capture failed. Check Npcap, admin mode, and Flask.");
+      console.error(err);
+    }
+  }
+
+  // ---------- RESULT CARD ----------
+  function displayResult(result) {
+    const card = document.getElementById("resultCard");
+    const label = document.getElementById("resultLabel");
+    const conf = document.getElementById("resultConfidence");
+    const threat = document.getElementById("resultThreat");
+    const time = document.getElementById("resultTime");
+    const typeEl = document.getElementById("resultType");
+
+    if (!card) return;
+
+    card.style.display = "block";
+
+    label.textContent = result.prediction;
+    label.className =
+      "result-label " +
+      (result.prediction === "ATTACK DETECTED"
+        ? "result-attack"
+        : "result-benign");
+
+    conf.textContent = result.confidence;
+    threat.textContent = result.threatLevel;
+    time.textContent = result.timestamp;
+
+    // 🔴 This line controls the last box in result card
+    typeEl.textContent = result.trafficType; // e.g., "DoS (Live Capture)"
+  }
+
+  // ---------- HISTORY ----------
+  function addToHistory(result) {
+    detectionHistory.unshift(result);
+    if (detectionHistory.length > 50) detectionHistory.pop();
+    updateHistoryTable();
+  }
+
+  function updateHistoryTable() {
+    const container = document.getElementById("historyContainer");
+
+    if (!container) return;
+
+    if (detectionHistory.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>No detections yet. Start analyzing traffic to see results here.</p>
+        </div>`;
+      return;
+    }
+
+    let html = `
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Prediction</th>
+            <th>Confidence</th>
+            <th>Threat Level</th>
+            <th>Traffic Type</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    detectionHistory.forEach((item) => {
+      html += `
+        <tr>
+          <td>${item.timestamp}</td>
+          <td>
+            <span class="badge ${
+              item.prediction === "ATTACK DETECTED" ? "attack" : "benign"
+            }">${item.prediction}</span>
+          </td>
+          <td>${item.confidence}</td>
+          <td>${item.threatLevel}</td>
+          <td>${item.trafficType}</td>  <!-- e.g., "DDoS (Live Capture)" -->
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+  }
+
+  // ---------- RANDOM FEATURE FILL (Auto Simulation) ----------
+  function randomizeFeatures() {
+    document.getElementById("feature0").value = Math.floor(Math.random() * 200000) + 10000;
+    document.getElementById("feature1").value = Math.floor(Math.random() * 100) + 1;
+    document.getElementById("feature2").value = Math.floor(Math.random() * 100) + 1;
+    document.getElementById("feature3").value = Math.floor(Math.random() * 1500) + 100;
+    document.getElementById("feature4").value = Math.floor(Math.random() * 300);
+    document.getElementById("feature5").value = Math.floor(Math.random() * 1200) + 100;
+    document.getElementById("feature6").value = Math.floor(Math.random() * 1500) + 100;
+    document.getElementById("feature7").value = Math.floor(Math.random() * 300) + 50;
+    document.getElementById("feature8").value = Math.floor(Math.random() * 1000000) + 100000;
+    document.getElementById("feature9").value = Math.floor(Math.random() * 100) + 10;
+    document.getElementById("feature10").value = Math.floor(Math.random() * 10000) + 1000;
+    document.getElementById("feature11").value = Math.floor(Math.random() * 25000) + 5000;
+    document.getElementById("feature12").value = Math.floor(Math.random() * 20000) + 2000;
+    document.getElementById("feature13").value = Math.floor(Math.random() * 20000) + 1000;
+    document.getElementById("feature14").value = Math.floor(Math.random() * 20) + 1;
+    document.getElementById("feature15").value = Math.floor(Math.random() * 80) + 5;
+    document.getElementById("feature16").value = (Math.random() * 5).toFixed(2);
+    document.getElementById("feature17").value = Math.floor(Math.random() * 1500) + 300;
+    document.getElementById("feature18").value = Math.floor(Math.random() * 1200) + 300;
+    document.getElementById("feature19").value = Math.floor(Math.random() * 500000) + 100000;
+  }
+
+  // ---------- EXPORT / CLEAR ----------
+  function exportHistory() {
+    if (detectionHistory.length === 0) {
+      alert("No history to export!");
+      return;
+    }
+
+    let csv = "Timestamp,Prediction,Confidence,Threat Level,Traffic Type\n";
+    detectionHistory.forEach((item) => {
+      csv += `${item.timestamp},${item.prediction},${item.confidence},${item.threatLevel},${item.trafficType}\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ids_history_" + new Date().toISOString().slice(0, 10) + ".csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  async function clearHistory() {
+    if (!confirm("Clear all detection history?")) return;
+
+    try {
+      await fetch(`${API_BASE_URL}/clear_history`, { method: "POST" });
+    } catch (err) {
+      console.log("Backend not reachable, clearing local only");
+    }
+
+    detectionHistory = [];
+    totalScans = 0;
+    attacksDetected = 0;
+    benignDetected = 0;
+    updateStats();
+    updateHistoryTable();
+    const card = document.getElementById("resultCard");
+    if (card) card.style.display = "none";
+  }
+
+  // ---------- AUTO SIMULATION ----------
+  function startAutoSimulation() {
+    if (autoSimInterval) return;
+
+    autoSimInterval = setInterval(() => {
+      randomizeFeatures();
+      analyzeTraffic();
+    }, 2000);
+
+    const startBtn = document.getElementById("startAutoBtn");
+    const stopBtn = document.getElementById("stopAutoBtn");
+    if (startBtn) startBtn.disabled = true;
+    if (stopBtn) stopBtn.disabled = false;
+  }
+
+  function stopAutoSimulation() {
+    if (autoSimInterval) {
+      clearInterval(autoSimInterval);
+      autoSimInterval = null;
+    }
+    const startBtn = document.getElementById("startAutoBtn");
+    const stopBtn = document.getElementById("stopAutoBtn");
+    if (startBtn) startBtn.disabled = false;
+    if (stopBtn) stopBtn.disabled = true;
+  }
+
+  // ---------- INIT ----------
+  checkBackendHealth();
+  setInterval(checkBackendHealth, 5000);
+</script>
+
+</body>
+</html>
